@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const FilterNav = (props) => {
-  const { items, selectedItem, textProperty, valueProperty, onFilter } = props;
+  const { items, selectedItem, textProperty, valueProperty, onGenreSelect } =
+    props;
   return (
     <ul className='list-group'>
       {items.map((item) => (
@@ -12,7 +13,7 @@ const FilterNav = (props) => {
             item === selectedItem ? 'list-group-item active' : 'list-group-item'
           }
           style={{ cursor: 'pointer' }}
-          onClick={() => onFilter(item)}
+          onClick={() => onGenreSelect(item)}
         >
           {item[textProperty]}
         </li>
@@ -25,7 +26,7 @@ FilterNav.propTypes = {
   textProperty: PropTypes.string.isRequired,
   valueProperty: PropTypes.string.isRequired,
   items: PropTypes.array.isRequired,
-  onFilter: PropTypes.func.isRequired,
+  onGenreSelect: PropTypes.func.isRequired,
 };
 
 FilterNav.defaultProps = {

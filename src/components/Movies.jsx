@@ -39,7 +39,7 @@ export class Movies extends Component {
     this.setState({ currentPage: singlePageNumber });
   };
 
-  handleFilter = (genre) => {
+  handleGenreSelect = (genre) => {
     // console.log(genre);
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
@@ -66,7 +66,7 @@ export class Movies extends Component {
           <FilterNav
             items={genres}
             selectedItem={selectedGenre}
-            onFilter={this.handleFilter}
+            onGenreSelect={this.handleGenreSelect}
           />
         </div>
         <div className='col'>
