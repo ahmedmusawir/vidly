@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import Movies from './components/Movies';
 
 function App() {
