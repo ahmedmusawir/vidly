@@ -1,42 +1,51 @@
-import React from 'react';
 import Like from './common/Like';
+import React, { Component } from 'react';
+import TableHeader from './common/TableHeader';
+import TableBody from './common/TableBody';
 
-const MoviesTable = (props) => {
-  const { movies, onLike, onDelete } = props;
-  return (
-    <table className='table'>
-      <thead>
-        <tr>
-          <th scope='col'>Title</th>
-          <th scope='col'>Genre</th>
-          <th scope='col'>Stock</th>
-          <th scope='col'>Rate</th>
-          <th scope='col'></th>
-        </tr>
-      </thead>
-      <tbody>
-        {movies.map((movie) => (
-          <tr key={movie._id}>
-            <th scope='row'>{movie.title}</th>
-            <td>{movie.genre.name}</td>
-            <td>{movie.numberInStock}</td>
-            <td>{movie.dailyRentalRate}</td>
-            <td>
-              <Like onClick={() => onLike(movie)} likeStatus={movie.like} />
-            </td>
-            <td>
-              <button
-                onClick={() => onDelete(movie)}
-                className='btn btn-danger'
-              >
-                Remove
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-};
+export class MoviesTable extends Component {
+  columns = [
+    { path: 'title', label: 'Title' },
+    { path: 'genre.name', label: 'Genre' },
+    { path: 'numberInStock', label: 'Stock' },
+    { path: 'dailyRentalRate', label: 'Rate' },
+    {
+      key: 'like',
+      content: (movie) => (
+        <Like
+          onClick={() => this.props.onLike(movie)}
+          likeStatus={movie.like}
+        />
+      ),
+    },
+    {
+      key: 'delete',
+      content: (movie) => (
+        <button
+          onClick={() => this.props.onDelete(movie)}
+          className='btn btn-danger'
+        >
+          Remove
+        </button>
+      ),
+    },
+  ];
+
+  render() {
+    const { movies, onSort, sortColumn } = this.props;
+
+    return (
+      <table className='table'>
+        <TableHeader
+          columns={this.columns}
+          onSort={onSort}
+          sortColumn={sortColumn}
+        />
+
+        <TableBody data={movies} columns={this.columns} />
+      </table>
+    );
+  }
+}
 
 export default MoviesTable;

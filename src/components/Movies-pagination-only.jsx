@@ -5,7 +5,6 @@ import { paginate } from '../utils/paginate';
 import { getMovies } from '../services/fakeMovieService';
 import { getGenres } from '../services/fakeGenreService';
 import FilterNav from './common/FilterNav';
-import _ from 'lodash';
 
 export class Movies extends Component {
   state = {
@@ -14,11 +13,10 @@ export class Movies extends Component {
     currentPage: 1,
     itemsPerPage: 4,
     selectedGenre: '',
-    sortColumn: { path: 'title', order: 'asc' },
   };
 
   componentDidMount() {
-    const genres = [{ _id: '', name: 'All Genres' }, ...getGenres()];
+    const genres = [{ name: 'All Genres' }, ...getGenres()];
     this.setState({ movies: getMovies(), genres });
   }
 
@@ -46,35 +44,14 @@ export class Movies extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
-  handleSort = (sortColumn) => {
-    // console.log(path);
-
-    this.setState({ sortColumn });
-  };
-
   render() {
     const { length: count } = this.state.movies;
-    const {
-      itemsPerPage,
-      currentPage,
-      movies,
-      genres,
-      selectedGenre,
-      sortColumn,
-    } = this.state;
+    const { itemsPerPage, currentPage, movies, genres, selectedGenre } =
+      this.state;
 
     if (count === 0) return <p>There are no movies in the Database.</p>;
 
-    // Filtering by Genre from the left Nav
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? movies.filter((m) => m.genre._id === selectedGenre._id)
-        : movies;
-
-    // Sorting by Column Headers
-    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
-
-    const paginatedMovies = paginate(sorted, itemsPerPage, currentPage);
+    const paginatedMovies = paginate(movies, itemsPerPage, currentPage);
     // Following is the reference for just simple pagination ...
     // const paginatedMovies = paginate(movies, itemsPerPage, currentPage);
 
@@ -88,17 +65,15 @@ export class Movies extends Component {
           />
         </div>
         <div className='col'>
-          <p>Showing {filtered.length} movies in the Database.</p>
+          <p>Showing {count} movies in the Database.</p>
           <MoviesTable
             movies={paginatedMovies}
-            sortColumn={sortColumn}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
-            onSort={this.handleSort}
           />
 
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={count}
             // itemsCount={count} -- used for basic pagination
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}

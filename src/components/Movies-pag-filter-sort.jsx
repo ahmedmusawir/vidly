@@ -18,7 +18,7 @@ export class Movies extends Component {
   };
 
   componentDidMount() {
-    const genres = [{ _id: '', name: 'All Genres' }, ...getGenres()];
+    const genres = [{ name: 'All Genres' }, ...getGenres()];
     this.setState({ movies: getMovies(), genres });
   }
 
@@ -46,8 +46,15 @@ export class Movies extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
-  handleSort = (sortColumn) => {
+  handleSort = (path) => {
     // console.log(path);
+    const sortColumn = { ...this.state.sortColumn };
+    if (sortColumn.path === path)
+      sortColumn.order = sortColumn.order === 'asc' ? 'desc' : 'asc';
+    else {
+      sortColumn.path = path;
+      sortColumn.order = 'asc';
+    }
 
     this.setState({ sortColumn });
   };
@@ -91,7 +98,6 @@ export class Movies extends Component {
           <p>Showing {filtered.length} movies in the Database.</p>
           <MoviesTable
             movies={paginatedMovies}
-            sortColumn={sortColumn}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
             onSort={this.handleSort}
