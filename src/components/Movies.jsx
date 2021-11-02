@@ -52,19 +52,9 @@ export class Movies extends Component {
     this.setState({ sortColumn });
   };
 
-  render() {
-    const { length: count } = this.state.movies;
-    const {
-      itemsPerPage,
-      currentPage,
-      movies,
-      genres,
-      selectedGenre,
-      sortColumn,
-    } = this.state;
-
-    if (count === 0) return <p>There are no movies in the Database.</p>;
-
+  getPagedData = () => {
+    const { itemsPerPage, currentPage, movies, selectedGenre, sortColumn } =
+      this.state;
     // Filtering by Genre from the left Nav
     const filtered =
       selectedGenre && selectedGenre._id
@@ -78,6 +68,18 @@ export class Movies extends Component {
     // Following is the reference for just simple pagination ...
     // const paginatedMovies = paginate(movies, itemsPerPage, currentPage);
 
+    return { data: paginatedMovies, totalCount: filtered.length };
+  };
+
+  render() {
+    const { length: count } = this.state.movies;
+    const { itemsPerPage, currentPage, genres, selectedGenre, sortColumn } =
+      this.state;
+
+    if (count === 0) return <p>There are no movies in the Database.</p>;
+
+    const { data, totalCount } = this.getPagedData();
+
     return (
       <section className='row'>
         <div className='col-3'>
@@ -88,9 +90,9 @@ export class Movies extends Component {
           />
         </div>
         <div className='col'>
-          <p>Showing {filtered.length} movies in the Database.</p>
+          <p>Showing {totalCount} movies in the Database.</p>
           <MoviesTable
-            movies={paginatedMovies}
+            movies={data}
             sortColumn={sortColumn}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
@@ -98,7 +100,7 @@ export class Movies extends Component {
           />
 
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             // itemsCount={count} -- used for basic pagination
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
